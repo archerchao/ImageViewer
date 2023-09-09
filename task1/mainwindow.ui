@@ -89,6 +89,9 @@
       <height>600</height>
      </size>
     </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(0, 0, 0);</string>
+    </property>
    </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
@@ -219,23 +222,7 @@
      <string>左右翻转</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label">
-    <property name="geometry">
-     <rect>
-      <x>870</x>
-      <y>40</y>
-      <width>200</width>
-      <height>200</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">border-image: url(:/卓工logo.png);</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>850</x>
@@ -267,8 +254,128 @@
      </item>
     </layout>
    </widget>
+   <widget class="QPushButton" name="testBt">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>430</y>
+      <width>89</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>testBt</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="histogramLabel">
+    <property name="geometry">
+     <rect>
+      <x>840</x>
+      <y>20</y>
+      <width>250</width>
+      <height>250</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1100</width>
+     <height>28</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>双线性插值</string>
+    </property>
+    <addaction name="zoomin"/>
+    <addaction name="separator"/>
+    <addaction name="bevel"/>
+    <addaction name="separator"/>
+    <addaction name="perspective"/>
+   </widget>
+   <widget class="QMenu" name="menu_2">
+    <property name="title">
+     <string>直方图</string>
+    </property>
+    <addaction name="histogram"/>
+    <addaction name="separator"/>
+    <addaction name="equHistogram"/>
+   </widget>
+   <widget class="QMenu" name="menu_3">
+    <property name="title">
+     <string>锐化</string>
+    </property>
+    <addaction name="separator"/>
+    <addaction name="robert"/>
+    <addaction name="separator"/>
+    <addaction name="sebel"/>
+    <addaction name="separator"/>
+    <addaction name="laplace"/>
+   </widget>
+   <widget class="QMenu" name="menu_4">
+    <property name="title">
+     <string>滤波</string>
+    </property>
+    <addaction name="medianFilter"/>
+   </widget>
+   <addaction name="menu"/>
+   <addaction name="menu_2"/>
+   <addaction name="menu_3"/>
+   <addaction name="menu_4"/>
+  </widget>
+  <action name="zoomin">
+   <property name="text">
+    <string>放大</string>
+   </property>
+  </action>
+  <action name="bevel">
+   <property name="text">
+    <string>斜切</string>
+   </property>
+  </action>
+  <action name="perspective">
+   <property name="text">
+    <string>透视</string>
+   </property>
+  </action>
+  <action name="histogram">
+   <property name="text">
+    <string>显示直方图</string>
+   </property>
+  </action>
+  <action name="equHistogram">
+   <property name="text">
+    <string>直方图均衡</string>
+   </property>
+  </action>
+  <action name="robert">
+   <property name="text">
+    <string>robert</string>
+   </property>
+  </action>
+  <action name="sebel">
+   <property name="text">
+    <string>sebel</string>
+   </property>
+  </action>
+  <action name="laplace">
+   <property name="text">
+    <string>laplace</string>
+   </property>
+  </action>
+  <action name="medianFilter">
+   <property name="text">
+    <string>中值滤波</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

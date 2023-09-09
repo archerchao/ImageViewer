@@ -55,12 +55,14 @@ OBJECTS_DIR   = ./
 SOURCES       = ../task1/ImageWidget.cpp \
 		../task1/imgprocess.cpp \
 		../task1/main.cpp \
-		../task1/mainwindow.cpp qrc_pic.cpp \
+		../task1/mainwindow.cpp \
+		../task1/opencv_deal.cpp qrc_pic.cpp \
 		moc_mainwindow.cpp
 OBJECTS       = ImageWidget.o \
 		imgprocess.o \
 		main.o \
 		mainwindow.o \
+		opencv_deal.o \
 		qrc_pic.o \
 		moc_mainwindow.o
 DIST          = /opt/Qt5.12.9/5.12.9/gcc_64/mkspecs/features/spec_pre.prf \
@@ -255,10 +257,12 @@ DIST          = /opt/Qt5.12.9/5.12.9/gcc_64/mkspecs/features/spec_pre.prf \
 		/opt/Qt5.12.9/5.12.9/gcc_64/mkspecs/features/lex.prf \
 		../task1/task1.pro ../task1/ImageWidget.h \
 		../task1/imgprocess.h \
-		../task1/mainwindow.h ../task1/ImageWidget.cpp \
+		../task1/mainwindow.h \
+		../task1/opencv_deal.h ../task1/ImageWidget.cpp \
 		../task1/imgprocess.cpp \
 		../task1/main.cpp \
-		../task1/mainwindow.cpp
+		../task1/mainwindow.cpp \
+		../task1/opencv_deal.cpp
 QMAKE_TARGET  = task1
 DESTDIR       = 
 TARGET        = task1
@@ -671,8 +675,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../task1/pic.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /opt/Qt5.12.9/5.12.9/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../task1/ImageWidget.h ../task1/imgprocess.h ../task1/mainwindow.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../task1/ImageWidget.cpp ../task1/imgprocess.cpp ../task1/main.cpp ../task1/mainwindow.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../task1/ImageWidget.h ../task1/imgprocess.h ../task1/mainwindow.h ../task1/opencv_deal.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../task1/ImageWidget.cpp ../task1/imgprocess.cpp ../task1/main.cpp ../task1/mainwindow.cpp ../task1/opencv_deal.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../task1/mainwindow.ui $(DISTDIR)/
 
 
@@ -2110,43 +2114,16 @@ mainwindow.o: ../task1/mainwindow.cpp ../task1/mainwindow.h \
 		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/QGraphicsItem \
 		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qgraphicsitem.h \
 		ui_mainwindow.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtCore/QVariant \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/QApplication \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qapplication.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qdesktopwidget.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/QGraphicsView \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qgraphicsview.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qscrollarea.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qabstractscrollarea.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qframe.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qgraphicsscene.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/QHBoxLayout \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qboxlayout.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qlayout.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qlayoutitem.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qgridlayout.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/QLabel \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qlabel.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/QPushButton \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qpushbutton.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qabstractbutton.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/QSlider \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qslider.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qabstractslider.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/QSpinBox \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qspinbox.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qabstractspinbox.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/QStatusBar \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qstatusbar.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/QTextBrowser \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qtextbrowser.h \
-		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qtextedit.h \
 		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/QFileDialog \
 		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qfiledialog.h \
 		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtWidgets/qdialog.h \
 		/opt/Qt5.12.9/5.12.9/gcc_64/include/QtCore/QDebug \
-		../task1/imgprocess.h
+		../task1/imgprocess.h \
+		../task1/opencv_deal.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../task1/mainwindow.cpp
+
+opencv_deal.o: ../task1/opencv_deal.cpp ../task1/opencv_deal.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o opencv_deal.o ../task1/opencv_deal.cpp
 
 qrc_pic.o: qrc_pic.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_pic.o qrc_pic.cpp

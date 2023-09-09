@@ -2,7 +2,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-CONFIG += c++11
+CONFIG += c++11 #console
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
@@ -19,12 +19,14 @@ SOURCES += \
     ImageWidget.cpp \
     imgprocess.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    opencv_deal.cpp
 
 HEADERS += \
     ImageWidget.h \
     imgprocess.h \
-    mainwindow.h
+    mainwindow.h \
+    opencv_deal.h
 
 FORMS += \
     mainwindow.ui

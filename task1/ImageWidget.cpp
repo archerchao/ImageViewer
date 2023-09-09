@@ -5,6 +5,9 @@
 #include <QGraphicsSceneDragDropEvent>
 #include <QDrag>
 #include <math.h>
+
+extern cv::Mat img_src,mat_img;
+
 ImageWidget::ImageWidget(QPixmap *pixmap)
 {
     m_pix = *pixmap;

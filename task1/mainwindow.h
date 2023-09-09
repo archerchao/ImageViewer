@@ -38,9 +38,12 @@ private slots:
 
     void on_leftrightBt_clicked();
 
+    void on_testBt_clicked();
+
 private:
     Ui::MainWindow *ui;
     ImageWidget *m_Image;
+    QGraphicsScene  *qgraphicsScene;
 
 };
 #endif // MAINWINDOW_H
