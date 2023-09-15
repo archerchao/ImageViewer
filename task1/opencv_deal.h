@@ -6,6 +6,8 @@
 #include <iostream>
 #include <string.h>
 #include <vector>
+#include <iostream>
+#include <stack>
 
 cv::Mat setMatSize(cv::Mat mat_img, float scale);
 cv::Mat setMatAngle(cv::Mat mat_img, float angle);
@@ -30,4 +32,11 @@ cv::Mat applyLaplaceOperator(const cv::Mat& inputImage);// 自定义函数，应
 
 cv::Mat DomainLowPassFilter(const cv::Mat& inputImage, double cutoffFrequency);// 自定义函数，应用频域低通滤波
 cv::Mat DomainHighPassFilter(const cv::Mat& inputImage, double cutoffFrequency);// 自定义函数，应用频域高通滤波
+
+cv::Mat dualThresholds(const cv::Mat& inputImage, double threshold1, double threshold2);// 自定义函数，使用双阈值法分割图像
+
+cv::Mat regionGrowing(const cv::Mat& inputImage, cv::Point seedPoint, int similarityThreshold);// 自定义函数，使用区域生长法分割图像
+
+cv::Mat watershed(const cv::Mat& inputImage, int value);
+
 #endif // OPENCV_DEAL_H

@@ -62,7 +62,27 @@ public:
     QSlider *RotateSlider;
     QSpinBox *RotatespinBox;
     QPushButton *testBt;
-    QLabel *histogramLabel;
+    QLabel *label_4;
+    QWidget *layoutWidget_3;
+    QHBoxLayout *horizontalLayout_5;
+    QSlider *threshold2Slider;
+    QSpinBox *threshold2spinBox;
+    QLabel *label_5;
+    QWidget *layoutWidget_4;
+    QHBoxLayout *horizontalLayout_6;
+    QSlider *threshold1Slider;
+    QSpinBox *threshold1spinBox;
+    QWidget *layoutWidget_5;
+    QHBoxLayout *horizontalLayout_8;
+    QSlider *growSlider;
+    QSpinBox *growspinBox;
+    QLabel *label_6;
+    QLabel *label_7;
+    QWidget *layoutWidget_6;
+    QHBoxLayout *horizontalLayout_9;
+    QSlider *watershedSlider;
+    QSpinBox *watershedspinBox;
+    QPushButton *pushButton;
     QStatusBar *statusbar;
     QMenuBar *menuBar;
     QMenu *menu;
@@ -189,9 +209,101 @@ public:
         testBt = new QPushButton(centralwidget);
         testBt->setObjectName(QString::fromUtf8("testBt"));
         testBt->setGeometry(QRect(850, 430, 89, 25));
-        histogramLabel = new QLabel(centralwidget);
-        histogramLabel->setObjectName(QString::fromUtf8("histogramLabel"));
-        histogramLabel->setGeometry(QRect(840, 20, 250, 250));
+        label_4 = new QLabel(centralwidget);
+        label_4->setObjectName(QString::fromUtf8("label_4"));
+        label_4->setGeometry(QRect(850, 220, 67, 17));
+        layoutWidget_3 = new QWidget(centralwidget);
+        layoutWidget_3->setObjectName(QString::fromUtf8("layoutWidget_3"));
+        layoutWidget_3->setGeometry(QRect(850, 240, 231, 28));
+        horizontalLayout_5 = new QHBoxLayout(layoutWidget_3);
+        horizontalLayout_5->setObjectName(QString::fromUtf8("horizontalLayout_5"));
+        horizontalLayout_5->setContentsMargins(0, 0, 0, 0);
+        threshold2Slider = new QSlider(layoutWidget_3);
+        threshold2Slider->setObjectName(QString::fromUtf8("threshold2Slider"));
+        threshold2Slider->setMaximum(255);
+        threshold2Slider->setSliderPosition(0);
+        threshold2Slider->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_5->addWidget(threshold2Slider);
+
+        threshold2spinBox = new QSpinBox(layoutWidget_3);
+        threshold2spinBox->setObjectName(QString::fromUtf8("threshold2spinBox"));
+        threshold2spinBox->setMaximum(255);
+
+        horizontalLayout_5->addWidget(threshold2spinBox);
+
+        label_5 = new QLabel(centralwidget);
+        label_5->setObjectName(QString::fromUtf8("label_5"));
+        label_5->setGeometry(QRect(850, 160, 67, 17));
+        layoutWidget_4 = new QWidget(centralwidget);
+        layoutWidget_4->setObjectName(QString::fromUtf8("layoutWidget_4"));
+        layoutWidget_4->setGeometry(QRect(850, 180, 231, 28));
+        horizontalLayout_6 = new QHBoxLayout(layoutWidget_4);
+        horizontalLayout_6->setObjectName(QString::fromUtf8("horizontalLayout_6"));
+        horizontalLayout_6->setContentsMargins(0, 0, 0, 0);
+        threshold1Slider = new QSlider(layoutWidget_4);
+        threshold1Slider->setObjectName(QString::fromUtf8("threshold1Slider"));
+        threshold1Slider->setMaximum(255);
+        threshold1Slider->setSliderPosition(0);
+        threshold1Slider->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_6->addWidget(threshold1Slider);
+
+        threshold1spinBox = new QSpinBox(layoutWidget_4);
+        threshold1spinBox->setObjectName(QString::fromUtf8("threshold1spinBox"));
+        threshold1spinBox->setMaximum(255);
+
+        horizontalLayout_6->addWidget(threshold1spinBox);
+
+        layoutWidget_5 = new QWidget(centralwidget);
+        layoutWidget_5->setObjectName(QString::fromUtf8("layoutWidget_5"));
+        layoutWidget_5->setGeometry(QRect(850, 110, 231, 28));
+        horizontalLayout_8 = new QHBoxLayout(layoutWidget_5);
+        horizontalLayout_8->setObjectName(QString::fromUtf8("horizontalLayout_8"));
+        horizontalLayout_8->setContentsMargins(0, 0, 0, 0);
+        growSlider = new QSlider(layoutWidget_5);
+        growSlider->setObjectName(QString::fromUtf8("growSlider"));
+        growSlider->setMaximum(255);
+        growSlider->setSliderPosition(0);
+        growSlider->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_8->addWidget(growSlider);
+
+        growspinBox = new QSpinBox(layoutWidget_5);
+        growspinBox->setObjectName(QString::fromUtf8("growspinBox"));
+        growspinBox->setMaximum(255);
+
+        horizontalLayout_8->addWidget(growspinBox);
+
+        label_6 = new QLabel(centralwidget);
+        label_6->setObjectName(QString::fromUtf8("label_6"));
+        label_6->setGeometry(QRect(850, 90, 91, 17));
+        label_7 = new QLabel(centralwidget);
+        label_7->setObjectName(QString::fromUtf8("label_7"));
+        label_7->setGeometry(QRect(850, 30, 91, 17));
+        layoutWidget_6 = new QWidget(centralwidget);
+        layoutWidget_6->setObjectName(QString::fromUtf8("layoutWidget_6"));
+        layoutWidget_6->setGeometry(QRect(850, 50, 231, 28));
+        horizontalLayout_9 = new QHBoxLayout(layoutWidget_6);
+        horizontalLayout_9->setObjectName(QString::fromUtf8("horizontalLayout_9"));
+        horizontalLayout_9->setContentsMargins(0, 0, 0, 0);
+        watershedSlider = new QSlider(layoutWidget_6);
+        watershedSlider->setObjectName(QString::fromUtf8("watershedSlider"));
+        watershedSlider->setMaximum(255);
+        watershedSlider->setSliderPosition(0);
+        watershedSlider->setOrientation(Qt::Horizontal);
+
+        horizontalLayout_9->addWidget(watershedSlider);
+
+        watershedspinBox = new QSpinBox(layoutWidget_6);
+        watershedspinBox->setObjectName(QString::fromUtf8("watershedspinBox"));
+        watershedspinBox->setMaximum(255);
+
+        horizontalLayout_9->addWidget(watershedspinBox);
+
+        pushButton = new QPushButton(centralwidget);
+        pushButton->setObjectName(QString::fromUtf8("pushButton"));
+        pushButton->setGeometry(QRect(1030, 370, 50, 17));
         MainWindow->setCentralWidget(centralwidget);
         statusbar = new QStatusBar(MainWindow);
         statusbar->setObjectName(QString::fromUtf8("statusbar"));
@@ -256,7 +368,11 @@ public:
         updownBt->setText(QApplication::translate("MainWindow", "\344\270\212\344\270\213\347\277\273\350\275\254", nullptr));
         leftrightBt->setText(QApplication::translate("MainWindow", "\345\267\246\345\217\263\347\277\273\350\275\254", nullptr));
         testBt->setText(QApplication::translate("MainWindow", "testBt", nullptr));
-        histogramLabel->setText(QString());
+        label_4->setText(QApplication::translate("MainWindow", "\345\217\214\351\230\210\345\200\2742\357\274\232", nullptr));
+        label_5->setText(QApplication::translate("MainWindow", "\345\217\214\351\230\210\345\200\2741\357\274\232", nullptr));
+        label_6->setText(QApplication::translate("MainWindow", "\347\224\237\351\225\277\351\230\210\345\200\274\357\274\232", nullptr));
+        label_7->setText(QApplication::translate("MainWindow", "Watershed\357\274\232", nullptr));
+        pushButton->setText(QApplication::translate("MainWindow", "Otsu", nullptr));
         menu->setTitle(QApplication::translate("MainWindow", "\345\217\214\347\272\277\346\200\247\346\217\222\345\200\274", nullptr));
         menu_2->setTitle(QApplication::translate("MainWindow", "\347\233\264\346\226\271\345\233\276", nullptr));
         menu_3->setTitle(QApplication::translate("MainWindow", "\351\224\220\345\214\226", nullptr));

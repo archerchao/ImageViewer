@@ -16,6 +16,9 @@ QString img_path;
 QImage img;
 cv::Mat img_src,mat_img;
 float rotate_angle = 0;
+int threshold_1 = 0, threshold_2 = 0;
+cv::Point seedPoint(0, 0);
+bool seedPoint_flag = false;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -195,7 +198,7 @@ void MainWindow::recvShowPicSignal(QImage image)
 void MainWindow::on_ReadPath_clicked()
 {
     QString runPath = QCoreApplication::applicationDirPath();//获取项目的根路径
-    img_path = QFileDialog::getOpenFileName(this,QStringLiteral("选择文件"),runPath,"Files(*.jpg *.png)",nullptr,QFileDialog::DontResolveSymlinks);
+    img_path = QFileDialog::getOpenFileName(this,QStringLiteral("选择文件"),runPath,"Files(*.jpg *.png *.bmp)",nullptr,QFileDialog::DontResolveSymlinks);
     qDebug()<<img_path;
     ui->textBrowser->setText(img_path);
     if(img_path == ""){
@@ -207,7 +210,7 @@ void MainWindow::on_ReadPath_clicked()
     img_src = cv::imread(img_path.toStdString());
     mat_img = img_src;
     img.load(img_path);
-
+    qDebug()<<img_src.cols<<img_src.rows<<endl;
     recvShowPicSignal(img);
 }
 
@@ -307,26 +310,121 @@ void MainWindow::on_testBt_clicked()
 //    m_Image->upd();//更新显示
 
 
-    // 设置低通滤波器参数（截止频率）
-    double lowPassCutoffFrequency = 30.0;
-    // 设置高通滤波器参数（截止频率）
-    double highPassCutoffFrequency = 30.0;
-    // 应用频域低通滤波
-    cv::Mat lowPassResult = DomainLowPassFilter(mat_img, lowPassCutoffFrequency);
-    // 应用频域高通滤波
-    cv::Mat highPassResult = DomainHighPassFilter(mat_img, highPassCutoffFrequency);
-    // 显示原始图像和频域滤波结果
-    cv::namedWindow("原始图像", cv::WINDOW_NORMAL);
-    cv::namedWindow("低通滤波结果", cv::WINDOW_NORMAL);
-    cv::namedWindow("高通滤波结果", cv::WINDOW_NORMAL);
-    cv::imshow("原始图像", mat_img);
-    cv::imshow("低通滤波结果", lowPassResult);
-    cv::imshow("高通滤波结果", highPassResult);
+//    // 设置低通滤波器参数（截止频率）
+//    double lowPassCutoffFrequency = 30.0;
+//    // 设置高通滤波器参数（截止频率）
+//    double highPassCutoffFrequency = 30.0;
+//    // 应用频域低通滤波
+//    cv::Mat lowPassResult = DomainLowPassFilter(mat_img, lowPassCutoffFrequency);
+//    // 应用频域高通滤波
+//    cv::Mat highPassResult = DomainHighPassFilter(mat_img, highPassCutoffFrequency);
+//    // 显示原始图像和频域滤波结果
+//    cv::namedWindow("原始图像", cv::WINDOW_NORMAL);
+//    cv::namedWindow("低通滤波结果", cv::WINDOW_NORMAL);
+//    cv::namedWindow("高通滤波结果", cv::WINDOW_NORMAL);
+//    cv::imshow("原始图像", mat_img);
+//    cv::imshow("低通滤波结果", lowPassResult);
+//    cv::imshow("高通滤波结果", highPassResult);
 
+    seedPoint_flag = false;
+    cv::Mat segmentedRegion = mat_img.clone();
+    qDebug()<<"2s内请点击seedPoint";
 
-    QImage qimg = cvMat2QImage(mat_img);//Mat转QImage
+//    // 获取2s以后的系统时间, 不创建定时器对象, 直接使用类的静态方法
+//    QTimer::singleShot(2000, this, [=](){
+//        qDebug()<<seedPoint.x<<seedPoint.y<<endl;
+//        segmentedRegion = segmentImageUsingRegionGrowing(mat_img, seedPoint, 255);
+//    });
+
+    segmentedRegion = regionGrowing(mat_img, seedPoint, 80);
+
+    QImage qimg = cvMat2QImage(segmentedRegion);//Mat转QImage
     m_Image->m_pix = QPixmap::fromImage(qimg);//QImage转QPixma
     m_Image->upd();//更新显示
 
     qDebug()<<"test";
+}
+
+void MainWindow::on_threshold1Slider_valueChanged(int value)
+{
+    if(img_path != ""){//判断图片地址是否为空
+        ui->threshold1spinBox->setValue(value);//设置二值化Box中的值
+        threshold_1 = value;
+        qDebug() << "threshold_1" << threshold_1 << "threshold_2" << threshold_2;
+        cv::Mat out_img;//返回图像
+        out_img = dualThresholds(mat_img, threshold_1, threshold_2);
+        QImage qimg = cvMat2QImage(out_img);//Mat转QImag
+        m_Image->m_pix = QPixmap::fromImage(qimg);//QImage转QPixmap
+        m_Image->upd();//显示更新
+    }
+}
+
+void MainWindow::on_threshold1spinBox_editingFinished()
+{
+    ui->threshold1Slider->setValue(ui->threshold1spinBox->value());//设置滑块值
+}
+
+void MainWindow::on_threshold2Slider_valueChanged(int value)
+{
+    if(img_path != ""){//判断图片地址是否为空
+        ui->threshold2spinBox->setValue(value);//
+        threshold_2 = value;
+        qDebug() << "threshold_1" << threshold_1 << "threshold_2" << threshold_2;
+        cv::Mat out_img;//返回图像
+        out_img = dualThresholds(mat_img, threshold_1, threshold_2);
+        QImage qimg = cvMat2QImage(out_img);//Mat转QImag
+        m_Image->m_pix = QPixmap::fromImage(qimg);//QImage转QPixmap
+        m_Image->upd();//显示更新
+    }
+}
+
+void MainWindow::on_threshold2spinBox_editingFinished()
+{
+    ui->threshold2Slider->setValue(ui->threshold2spinBox->value());//设置滑块值
+}
+
+
+void MainWindow::on_growSlider_valueChanged(int value)
+{
+    if(img_path != ""){//判断图片地址是否为空
+        ui->growspinBox->setValue(value);//
+        cv::Mat out_img;//返回图像
+        out_img = regionGrowing(mat_img, seedPoint, value);
+        QImage qimg = cvMat2QImage(out_img);//Mat转QImag
+        m_Image->m_pix = QPixmap::fromImage(qimg);//QImage转QPixmap
+        m_Image->upd();//显示更新
+    }
+}
+
+void MainWindow::on_growspinBox_valueChanged(int arg1)
+{
+    ui->growSlider->setValue(arg1);//设置滑块值
+}
+
+void MainWindow::on_watershedSlider_valueChanged(int value)
+{
+    if(img_path != ""){//判断图片地址是否为空
+        ui->watershedspinBox->setValue(value);//
+        cv::Mat out_img;//返回图像=mat_img.clone()
+        out_img = watershed(mat_img, value);//
+
+        QImage qimg = cvMat2QImage(out_img);//Mat转QImag
+        m_Image->m_pix = QPixmap::fromImage(qimg);//QImage转QPixmap
+        m_Image->upd();//显示更新
+    }
+}
+
+void MainWindow::on_watershedspinBox_valueChanged(int arg1)
+{
+    ui->watershedSlider->setValue(arg1);//设置滑块值
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    cv::Mat outputImage = grayscale(mat_img);
+
+    cv::threshold(outputImage, outputImage, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
+    QImage qimg = cvMat2QImage(outputImage);//Mat转QImag
+    m_Image->m_pix = QPixmap::fromImage(qimg);//QImage转QPixmap
+    m_Image->upd();//显示更新
 }

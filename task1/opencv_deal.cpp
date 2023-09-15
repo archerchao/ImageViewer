@@ -500,3 +500,106 @@ cv::Mat DomainHighPassFilter(const cv::Mat &inputImage, double cutoffFrequency)
 
     return highPass;
 }
+
+cv::Mat dualThresholds(const cv::Mat &inputImage, double threshold1, double threshold2)
+{
+    cv::Mat segmentedImage = inputImage.clone();
+
+    for (int i = 0; i < inputImage.rows; i++) {
+        for (int j = 0; j < inputImage.cols; j++) {
+            uchar pixelValue = inputImage.at<uchar>(i, j);
+            segmentedImage.at<uchar>(i, j) = 255;
+            if (pixelValue < threshold1) {
+                segmentedImage.at<uchar>(i, j) = 0;
+            }
+            if (pixelValue > threshold2) {
+                segmentedImage.at<uchar>(i, j) = 0;
+            }
+        }
+    }
+
+    return segmentedImage;
+}
+
+cv::Mat regionGrowing(const cv::Mat &inputImage, cv::Point seedPoint, int similarityThreshold)
+{
+    cv::Mat outputImage = cv::Mat::zeros(inputImage.size(), CV_8UC1);    //生长区域
+    cv::Size imageSize = inputImage.size();
+    std::stack<cv::Point> pointsStack;
+    pointsStack.push(seedPoint);
+
+    // 获取种子点的像素值
+    int seedPixelValue = inputImage.at<uchar>(seedPoint);
+
+    while (!pointsStack.empty()) {
+        cv::Point currentPoint = pointsStack.top();
+        pointsStack.pop();
+
+        // 如果当前点未被访问过且像素值与种子点相似，则将其标记为已访问
+        if (outputImage.at<uchar>(currentPoint) == 0 && std::abs(inputImage.at<uchar>(currentPoint) - seedPixelValue) <= similarityThreshold) {
+            outputImage.at<uchar>(currentPoint) = 255; // 设置为白色
+            // 将当前点的邻居点入栈
+            if (currentPoint.x > 0) {
+                pointsStack.push(cv::Point(currentPoint.x - 1, currentPoint.y));
+            }
+            if (currentPoint.x < imageSize.width - 1) {
+                pointsStack.push(cv::Point(currentPoint.x + 1, currentPoint.y));
+            }
+            if (currentPoint.y > 0) {
+                pointsStack.push(cv::Point(currentPoint.x, currentPoint.y - 1));
+            }
+            if (currentPoint.y < imageSize.height - 1) {
+                pointsStack.push(cv::Point(currentPoint.x, currentPoint.y + 1));
+            }
+        }
+    }
+    return outputImage;
+}
+
+cv::Mat watershed(const cv::Mat &inputImage, int value)
+{
+    // 1. 灰度化和二值化得到二值图像
+    cv::Mat grayImage;
+    cv::cvtColor(inputImage, grayImage, cv::COLOR_BGR2GRAY);
+
+    cv::Mat binaryImage;
+    cv::threshold(grayImage, binaryImage, value, 255, cv::THRESH_BINARY_INV | cv::THRESH_OTSU);
+    // 2. 通过膨胀得到确定的背景区域，通过距离变换得到确定的前景区域
+    cv::Mat sureBackground;
+    cv::dilate(binaryImage, sureBackground, cv::Mat(), cv::Point(-1, -1), 3);
+
+    cv::Mat distanceTransform;
+    cv::distanceTransform(binaryImage, distanceTransform, cv::DIST_L2, 5);
+
+    double minVal, maxVal;
+    cv::Point minLoc, maxLoc;
+    cv::minMaxLoc(distanceTransform, &minVal, &maxVal, &minLoc, &maxLoc);
+
+    double thresholdValue = (value/255.0) * maxVal;
+    cv::Mat sureForeground;
+    cv::threshold(distanceTransform, sureForeground, thresholdValue, 255, cv::THRESH_BINARY);
+    sureForeground.convertTo(sureForeground, CV_8U);
+
+    // 3. 对确定的前景图像进行连接组件处理，得到标记图像
+    cv::Mat markers;
+    cv::connectedComponents(sureForeground, markers, 4, CV_32S);
+
+    // 4. 根据标记图像对原图像应用分水岭算法，更新标记图像
+    cv::watershed(inputImage, markers);
+
+    // 绘制分割结果
+    cv::Mat outputImage = cv::Mat::zeros(inputImage.size(), CV_8UC3);
+    for (int i = 0; i < markers.rows; ++i) {
+        for (int j = 0; j < markers.cols; ++j) {
+            int marker = markers.at<int>(i, j);
+            if (marker == -1){
+//                outputImage.at<cv::Vec3b>(i, j) = cv::Vec3b(255, 0, 0); // 分割线
+                // 加粗分割线
+                cv::circle(outputImage, cv::Point(j, i), 2, cv::Scalar(255, 0, 0), -1);
+            }
+            else if (marker > 0)
+                outputImage.at<cv::Vec3b>(i, j) = inputImage.at<cv::Vec3b>(i, j); // 标记区域保持原始颜色
+        }
+    }
+    return outputImage;
+}

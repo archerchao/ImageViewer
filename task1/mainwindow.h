@@ -40,6 +40,25 @@ private slots:
 
     void on_testBt_clicked();
 
+    void on_threshold1Slider_valueChanged(int value);
+
+    void on_threshold1spinBox_editingFinished();
+
+    void on_threshold2Slider_valueChanged(int value);
+
+    void on_threshold2spinBox_editingFinished();
+
+
+    void on_growSlider_valueChanged(int value);
+
+    void on_growspinBox_valueChanged(int arg1);
+
+    void on_watershedSlider_valueChanged(int value);
+
+    void on_watershedspinBox_valueChanged(int arg1);
+
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     ImageWidget *m_Image;

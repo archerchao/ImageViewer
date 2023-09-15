@@ -7,6 +7,8 @@
 #include <math.h>
 
 extern cv::Mat img_src,mat_img;
+extern cv::Point seedPoint;
+extern bool seedPoint_flag;
 
 ImageWidget::ImageWidget(QPixmap *pixmap)
 {
@@ -35,6 +37,10 @@ void ImageWidget::mousePressEvent(QGraphicsSceneMouseEvent *event)//点击鼠标
     if(event->button()== Qt::LeftButton)
     {
         m_startPos = event->pos();//鼠标左击时，获取当前鼠标在图片中的坐标，
+        qDebug() << "鼠标点击" << endl;
+        seedPoint = cv::Point((int)(m_startPos.x()+(m_pix.width()/2)), (int)(m_startPos.y()+(m_pix.height()/2)));
+        qDebug()<<(int)(m_startPos.x()+(m_pix.width()/2))<<(int)(m_startPos.y()+(m_pix.height()/2))<<endl;
+        seedPoint_flag = true;
         m_isMove = true;//标记鼠标左键被按下
     }
     else if(event->button() == Qt::RightButton)
