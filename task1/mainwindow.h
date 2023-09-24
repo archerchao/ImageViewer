@@ -59,6 +59,22 @@ private slots:
 
     void on_pushButton_clicked();
 
+    void on_canny1Slider_valueChanged(int value);
+
+    void on_canny1spinBox_valueChanged(int arg1);
+
+    void on_canny2Slider_valueChanged(int value);
+
+    void on_canny2spinBox_valueChanged(int arg1);
+
+    void on_HoughthresholdSlider_valueChanged(int value);
+
+    void on_HoughthresholdspinBox_valueChanged(int arg1);
+
+    void on_HoughminSlider_valueChanged(int value);
+
+    void on_HoughminspinBox_valueChanged(int arg1);
+
 private:
     Ui::MainWindow *ui;
     ImageWidget *m_Image;

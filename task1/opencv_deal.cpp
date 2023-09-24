@@ -603,3 +603,88 @@ cv::Mat watershed(const cv::Mat &inputImage, int value)
     }
     return outputImage;
 }
+
+cv::Mat Erode(const cv::Mat &inputImage, int kernelSize)
+{
+    cv::Mat erodedImage = inputImage.clone(); // 创建输出图像，复制输入图像
+    int halfKernelSize = kernelSize / 2; // 计算卷积核的半径
+
+    // 遍历图像像素
+    for (int y = halfKernelSize; y < inputImage.rows - halfKernelSize; ++y) {
+        for (int x = halfKernelSize; x < inputImage.cols - halfKernelSize; ++x) {
+            uchar minPixelValue = 255; // 初始化最小像素值为最大可能值
+
+            // 遍历卷积核内的像素
+            for (int i = -halfKernelSize; i <= halfKernelSize; ++i) {
+                for (int j = -halfKernelSize; j <= halfKernelSize; ++j) {
+                    uchar pixelValue = inputImage.at<uchar>(y + i, x + j); // 获取当前像素值
+                    if (pixelValue < minPixelValue) {
+                        minPixelValue = pixelValue; // 更新最小像素值
+                    }
+                }
+            }
+            erodedImage.at<uchar>(y, x) = minPixelValue; // 更新输出图像的像素值
+        }
+    }
+    return erodedImage; // 返回腐蚀后的图像
+}
+
+cv::Mat Dilate(const cv::Mat &inputImage, int kernelSize)
+{
+    cv::Mat dilatedImage = inputImage.clone(); // 创建输出图像，复制输入图像
+    int halfKernelSize = kernelSize / 2; // 计算卷积核的半径
+
+    // 遍历图像像素
+    for (int y = halfKernelSize; y < inputImage.rows - halfKernelSize; ++y) {
+        for (int x = halfKernelSize; x < inputImage.cols - halfKernelSize; ++x) {
+            uchar maxPixelValue = 0; // 初始化最大像素值为最小可能值
+
+            // 遍历卷积核内的像素
+            for (int i = -halfKernelSize; i <= halfKernelSize; ++i) {
+                for (int j = -halfKernelSize; j <= halfKernelSize; ++j) {
+                    uchar pixelValue = inputImage.at<uchar>(y + i, x + j); // 获取当前像素值
+                    if (pixelValue > maxPixelValue) {
+                        maxPixelValue = pixelValue; // 更新最大像素值
+                    }
+                }
+            }
+            dilatedImage.at<uchar>(y, x) = maxPixelValue; // 更新输出图像的像素值
+        }
+    }
+    return dilatedImage; // 返回膨胀后的图像
+}
+
+cv::Mat detectEdgesCanny(const cv::Mat &inputImage, int lowThreshold, int highThreshold)
+{
+    cv::Mat edges;
+    cv::Canny(inputImage, edges, lowThreshold, highThreshold);
+    return edges;
+}
+
+cv::Mat detectLines(const cv::Mat &mat_img, int threshold, int minlenth, int canny_1, int canny_2)
+{
+    // 创建结果图像
+    cv::Mat houghImage;// = inputImage.clone();
+    cv::Mat inputImage = mat_img.clone();
+    cv::cvtColor(inputImage, houghImage, cv::COLOR_GRAY2BGR);
+
+    cv::Canny(inputImage, inputImage, canny_1, canny_2);
+
+    // 执行霍夫变换检测直线
+    std::vector<cv::Vec4i> lines;
+    cv::HoughLinesP(inputImage, lines, 1, CV_PI / 180, threshold, minlenth, 3);
+
+    // 绘制检测到的直线
+    for( size_t i = 0; i < lines.size(); i++ )
+    {
+        cv::Vec4i l = lines[i];
+        line( houghImage, cv::Point(l[0], l[1]), cv::Point(l[2], l[3]), cv::Scalar(0,0,255), 1, cv::LINE_AA);
+    }
+
+    // 显示结果图像
+    cv::namedWindow("霍夫变换结果", cv::WINDOW_NORMAL);
+    cv::imshow("霍夫变换结果", houghImage);
+
+    return houghImage;
+
+}

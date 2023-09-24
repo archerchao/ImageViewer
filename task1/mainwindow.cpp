@@ -17,6 +17,8 @@ QImage img;
 cv::Mat img_src,mat_img;
 float rotate_angle = 0;
 int threshold_1 = 0, threshold_2 = 0;
+int canny_1 = 0, canny_2 = 0;
+int Houghthreshold=0, Houghmin=0;
 cv::Point seedPoint(0, 0);
 bool seedPoint_flag = false;
 
@@ -168,6 +170,44 @@ MainWindow::MainWindow(QWidget *parent)
         QImage qimg = cvMat2QImage(mat_img);//Mat转QImage
         m_Image->m_pix = QPixmap::fromImage(qimg);//QImage转QPixma
         m_Image->upd();//更新显示
+    });
+
+    void (QAction::*Erodesignal)(bool) = &QAction::triggered;
+    connect(ui->ErodeMenu,Erodesignal,this,[=](){
+        qDebug()<<"Erodesignal";
+        mat_img = grayscale(mat_img);
+        cv::namedWindow("腐蚀前", cv::WINDOW_NORMAL);
+        cv::imshow("腐蚀前", mat_img);
+        mat_img = Erode(mat_img,3);
+
+        QImage qimg = cvMat2QImage(mat_img);//Mat转QImage
+        m_Image->m_pix = QPixmap::fromImage(qimg);//QImage转QPixma
+        m_Image->upd();//更新显示
+
+        cv::Mat erode_cv;
+        cv::erode(mat_img,erode_cv,3);
+        // 显示结果图像
+        cv::namedWindow("OpenCv腐蚀结果", cv::WINDOW_NORMAL);
+        cv::imshow("OpenCv腐蚀结果", erode_cv);
+    });
+
+    void (QAction::*Dilatesignal)(bool) = &QAction::triggered;
+    connect(ui->DilateMenu,Dilatesignal,this,[=](){
+        qDebug()<<"Dilatesignal";
+        mat_img = grayscale(mat_img);
+        cv::namedWindow("膨胀前", cv::WINDOW_NORMAL);
+        cv::imshow("膨胀前", mat_img);
+        mat_img = Dilate(mat_img,3);
+
+        QImage qimg = cvMat2QImage(mat_img);//Mat转QImage
+        m_Image->m_pix = QPixmap::fromImage(qimg);//QImage转QPixma
+        m_Image->upd();//更新显示
+
+        cv::Mat dilate_cv;
+        cv::dilate(mat_img,dilate_cv,3);
+        // 显示结果图像
+        cv::namedWindow("OpenCv膨胀结果", cv::WINDOW_NORMAL);
+        cv::imshow("OpenCv膨胀结果", dilate_cv);
     });
 
 
@@ -326,21 +366,24 @@ void MainWindow::on_testBt_clicked()
 //    cv::imshow("低通滤波结果", lowPassResult);
 //    cv::imshow("高通滤波结果", highPassResult);
 
-    seedPoint_flag = false;
-    cv::Mat segmentedRegion = mat_img.clone();
-    qDebug()<<"2s内请点击seedPoint";
+//    seedPoint_flag = false;
+//    cv::Mat segmentedRegion = mat_img.clone();
+//    qDebug()<<"2s内请点击seedPoint";
+////    // 获取2s以后的系统时间, 不创建定时器对象, 直接使用类的静态方法
+////    QTimer::singleShot(2000, this, [=](){
+////        qDebug()<<seedPoint.x<<seedPoint.y<<endl;
+////        segmentedRegion = segmentImageUsingRegionGrowing(mat_img, seedPoint, 255);
+////    });
+//    segmentedRegion = regionGrowing(mat_img, seedPoint, 80);
 
-//    // 获取2s以后的系统时间, 不创建定时器对象, 直接使用类的静态方法
-//    QTimer::singleShot(2000, this, [=](){
-//        qDebug()<<seedPoint.x<<seedPoint.y<<endl;
-//        segmentedRegion = segmentImageUsingRegionGrowing(mat_img, seedPoint, 255);
-//    });
+//    detectLines(mat_img,10);
+//    detectLines(mat_img,15);
+//    detectLines(mat_img,50);
+//    detectLines(mat_img,20);
 
-    segmentedRegion = regionGrowing(mat_img, seedPoint, 80);
-
-    QImage qimg = cvMat2QImage(segmentedRegion);//Mat转QImage
-    m_Image->m_pix = QPixmap::fromImage(qimg);//QImage转QPixma
-    m_Image->upd();//更新显示
+//    QImage qimg = cvMat2QImage(segmentedRegion);//Mat转QImage
+//    m_Image->m_pix = QPixmap::fromImage(qimg);//QImage转QPixma
+//    m_Image->upd();//更新显示
 
     qDebug()<<"test";
 }
@@ -405,7 +448,7 @@ void MainWindow::on_watershedSlider_valueChanged(int value)
 {
     if(img_path != ""){//判断图片地址是否为空
         ui->watershedspinBox->setValue(value);//
-        cv::Mat out_img;//返回图像=mat_img.clone()
+        cv::Mat out_img;//返回图像
         out_img = watershed(mat_img, value);//
 
         QImage qimg = cvMat2QImage(out_img);//Mat转QImag
@@ -427,4 +470,80 @@ void MainWindow::on_pushButton_clicked()
     QImage qimg = cvMat2QImage(outputImage);//Mat转QImag
     m_Image->m_pix = QPixmap::fromImage(qimg);//QImage转QPixmap
     m_Image->upd();//显示更新
+}
+
+void MainWindow::on_canny1Slider_valueChanged(int value)
+{
+    if(img_path != ""){//判断图片地址是否为空
+        ui->canny1spinBox->setValue(value);//
+        canny_1 = value;
+        qDebug() << "canny_1" << canny_1 << "canny_2" << canny_2;
+        cv::Mat out_img;//返回图像
+        out_img = detectEdgesCanny(mat_img, canny_1, canny_2);
+        QImage qimg = cvMat2QImage(out_img);//Mat转QImag
+        m_Image->m_pix = QPixmap::fromImage(qimg);//QImage转QPixmap
+        m_Image->upd();//显示更新
+    }
+}
+
+void MainWindow::on_canny1spinBox_valueChanged(int arg1)
+{
+    ui->canny1Slider->setValue(arg1);//设置滑块值
+}
+
+void MainWindow::on_canny2Slider_valueChanged(int value)
+{
+    if(img_path != ""){//判断图片地址是否为空
+        ui->canny2spinBox->setValue(value);//
+        canny_2 = value;
+        qDebug() << "canny_1" << canny_1 << "canny_2" << canny_2;
+        cv::Mat out_img;//返回图像
+        out_img = detectEdgesCanny(mat_img, canny_1, canny_2);
+        QImage qimg = cvMat2QImage(out_img);//Mat转QImag
+        m_Image->m_pix = QPixmap::fromImage(qimg);//QImage转QPixmap
+        m_Image->upd();//显示更新
+    }
+}
+
+void MainWindow::on_canny2spinBox_valueChanged(int arg1)
+{
+    ui->canny2Slider->setValue(arg1);//设置滑块值
+}
+
+void MainWindow::on_HoughthresholdSlider_valueChanged(int value)
+{
+    if(img_path != ""){//判断图片地址是否为空
+        ui->HoughthresholdspinBox->setValue(value);//
+        Houghthreshold = value;
+        qDebug() << "Houghthreshold" << Houghthreshold << "Houghmin" << Houghmin;
+        cv::Mat out_img;//返回图像
+        out_img = detectLines(mat_img, Houghthreshold, Houghmin, canny_1, canny_2);
+        QImage qimg = cvMat2QImage(out_img);//Mat转QImag
+        m_Image->m_pix = QPixmap::fromImage(qimg);//QImage转QPixmap
+        m_Image->upd();//显示更新
+    }
+}
+
+void MainWindow::on_HoughthresholdspinBox_valueChanged(int arg1)
+{
+    ui->HoughthresholdSlider->setValue(arg1);//设置滑块值
+}
+
+void MainWindow::on_HoughminSlider_valueChanged(int value)
+{
+    if(img_path != ""){//判断图片地址是否为空
+        ui->HoughminspinBox->setValue(value);//
+        Houghmin = value;
+        qDebug() << "Houghthreshold" << Houghthreshold << "Houghmin" << Houghmin;
+        cv::Mat out_img;//返回图像
+        out_img = detectLines(mat_img, Houghthreshold, Houghmin, canny_1, canny_2);
+        QImage qimg = cvMat2QImage(out_img);//Mat转QImag
+        m_Image->m_pix = QPixmap::fromImage(qimg);//QImage转QPixmap
+        m_Image->upd();//显示更新
+    }
+}
+
+void MainWindow::on_HoughminspinBox_valueChanged(int arg1)
+{
+    ui->HoughminSlider->setValue(arg1);//设置滑块值
 }

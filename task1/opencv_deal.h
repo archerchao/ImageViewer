@@ -39,4 +39,9 @@ cv::Mat regionGrowing(const cv::Mat& inputImage, cv::Point seedPoint, int simila
 
 cv::Mat watershed(const cv::Mat& inputImage, int value);
 
+cv::Mat Erode(const cv::Mat& inputImage, int kernelSize);
+cv::Mat Dilate(const cv::Mat& inputImage, int kernelSize);
+cv::Mat detectEdgesCanny(const cv::Mat& inputImage, int lowThreshold, int highThreshold);
+cv::Mat detectLines(const cv::Mat &inputImage, int threshold, int minlenth, int canny_1, int canny_2);
+
 #endif // OPENCV_DEAL_H
